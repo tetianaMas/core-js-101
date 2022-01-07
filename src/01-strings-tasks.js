@@ -239,8 +239,35 @@ function getRectangleString(width, height) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  const ALPHABET_UPPER_CASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const ALPHABET_LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz';
+
+  function getEncodedLetter(index, alphabet) {
+    const alphabetLength = alphabet.length;
+    const SHIFT = alphabetLength / 2;
+
+    if (index + SHIFT > alphabetLength - 1) {
+      const diff = alphabetLength - index;
+
+      return alphabet[SHIFT - diff];
+    }
+
+    return alphabet[index + SHIFT];
+  }
+
+  return [...str].map((letter) => {
+    let currIndex = ALPHABET_UPPER_CASE.indexOf(letter);
+    if (currIndex === -1) {
+      currIndex = ALPHABET_LOWER_CASE.indexOf(letter);
+      if (currIndex === -1) {
+        return letter;
+      }
+      return getEncodedLetter(currIndex, ALPHABET_LOWER_CASE);
+    }
+    return getEncodedLetter(currIndex, ALPHABET_UPPER_CASE);
+  })
+    .join('');
 }
 
 /**
@@ -256,8 +283,8 @@ function encodeToRot13(/* str */) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(value) {
+  return typeof value === 'string' || value instanceof String;
 }
 
 /**
@@ -284,8 +311,12 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const initialDeck = ['A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣',
+    'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦',
+    'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '10♥', 'J♥', 'Q♥', 'K♥',
+    'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', '10♠', 'J♠', 'Q♠', 'K♠'];
+  return initialDeck[initialDeck.indexOf(value)] ? initialDeck.indexOf(value) : NaN;
 }
 
 module.exports = {

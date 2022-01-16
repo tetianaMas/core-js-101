@@ -117,8 +117,12 @@ function chainPromises(array, action) {
 
         return executeAction(result);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        index += 1;
+        if (index < array.length) {
+          return doNextPromise(index);
+        }
+        return executeAction(result);
       });
   };
 

@@ -438,8 +438,29 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const height1 = m1.length;
+  const height2 = m2.length;
+  const width1 = m1[0].length;
+  const width2 = m2[0].length;
+  const matrix = [];
+  if (height2 === width1) {
+    for (let i = 0; i < height1; i += 1) {
+      matrix.push([]);
+
+      for (let j = 0; j < width2; j += 1) {
+        let value = 0;
+
+        for (let n = 0; n < height2; n += 1) {
+          value += m1[i][n] * m2[n][j];
+        }
+
+        matrix[i].push(value);
+      }
+    }
+  }
+
+  return matrix;
 }
 
 /**
@@ -472,8 +493,56 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  function isWinner(arr) {
+    const elems = arr.filter((elem) => !!elem);
+    if (elems.length === 3) {
+      return [...new Set(elems)].length === 1;
+    }
+
+    return undefined;
+  }
+
+  function checkDiagonals() {
+    const diagonals = [];
+    for (let i = 0; i < position.length; i += 1) {
+      diagonals.push(position[i][i]);
+    }
+    if (isWinner(diagonals)) {
+      return diagonals[0];
+    }
+
+    const diagonalsEnd = [];
+    for (let i = position.length - 1, j = 0; i >= 0; i -= 1) {
+      diagonalsEnd.push(position[i][j]);
+      j += 1;
+    }
+
+    if (isWinner(diagonalsEnd)) {
+      return diagonalsEnd[0];
+    }
+
+    return undefined;
+  }
+
+  for (let i = 0; i < position.length; i += 1) {
+    if (isWinner(position[i])) {
+      return position[i][0];
+    }
+  }
+
+  for (let i = 0; i < position.length; i += 1) {
+    const arr = [];
+    for (let j = 0; j < position[i].length; j += 1) {
+      arr.push(position[j][i]);
+    }
+
+    if (isWinner(arr)) {
+      return arr[0];
+    }
+  }
+
+  return checkDiagonals();
 }
 
 module.exports = {
@@ -495,3 +564,31 @@ module.exports = {
   getMatrixProduct,
   evaluateTicTacToePosition,
 };
+
+
+/* function uncurry(f) {
+  return function (...args) {
+        console.log(args);
+
+    let counter = 0;
+    let res = args.reduce((func, arg, index) => {
+      console.log(func)
+
+      if (typeof func === 'function') {
+        const argsLength = func.length;
+        if (argsLength) {
+          const arrCopy = [...args];
+          const arguments = arrCopy.splice(counter, argsLength);
+          counter += argsLength;
+          return func(...arguments);
+        } else {
+          return func();
+        }
+      }
+
+      return func;
+    }, f);
+
+    return res;
+  }
+} */
